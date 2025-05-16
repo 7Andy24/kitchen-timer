@@ -203,13 +203,14 @@
 
     // Enable dark mode on page load if previously selected
     window.onload = function () {
-        createTickMarks();
-
         const isDark = localStorage.getItem('darkMode') === 'true';
         if (isDark) {
             document.body.classList.add('dark-mode');
         }
+
+        createTickMarks(); // now rendered with the correct theme
     };
+
 
 </script>    
 </body>
