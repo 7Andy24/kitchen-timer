@@ -92,14 +92,15 @@
             const x2 = 50 + inner * Math.cos(angle);
             const y2 = 50 + inner * Math.sin(angle);
 
+            const isDark = document.body.classList.contains('dark-mode');
+
             const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
             tick.setAttribute("x1", x1);
             tick.setAttribute("y1", y1);
             tick.setAttribute("x2", x2);
             tick.setAttribute("y2", y2);
-            tick.setAttribute("stroke", isMajor ? "#000000" : "#888888");
+            tick.setAttribute("stroke", isMajor ? (isDark ? "#ffffff" : "#000000") : "#888888");
             tick.setAttribute("stroke-width", isMajor ? "2" : "0.7");
-
             group.appendChild(tick);
 
             // Add numbers (every 15 seconds)
@@ -111,7 +112,7 @@
                 label.setAttribute("x", x);
                 label.setAttribute("y", y);
                 label.setAttribute("text-anchor", "middle");
-                label.setAttribute("fill", "#000000");
+                label.setAttribute("fill", isDark ? "#ffffff" : "#000000");
                 label.setAttribute("font-size", "6");
                 label.setAttribute("font-weight", "bold");
                 label.setAttribute("font-family", "sans-serif");
@@ -197,6 +198,7 @@
         const body = document.body;
         const isDark = body.classList.toggle('dark-mode');
         localStorage.setItem('darkMode', isDark);
+        createTickMarks(); // Re-render ticks/labels with correct color
     }
 
     // Enable dark mode on page load if previously selected
