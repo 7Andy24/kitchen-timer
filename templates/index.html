@@ -24,14 +24,14 @@
     <circle cx="50" cy="50" r="48" fill="white" />
 
     <g id="tick-marks">
-  <!-- Tick marks will go here via JavaScript -->
+    <!-- Tick marks will go here via JavaScript -->
     </g>
 
     <!-- Background circle (gray track) -->
     <circle cx="50" cy="50" r="45" stroke="#444" stroke-width="6" fill="none" />
 
     <!-- Dynamic blue pie wedge -->
-    <path id="progress-arc" fill="#2196f3"></path>
+    <path id="progress-arc"></path>
 
     <!-- Inner black center -->
     <circle cx="50" cy="50" r="25" fill="black" />
@@ -67,7 +67,10 @@
         if (percentRemaining <= 0) {
             arc.setAttribute("d", "");
         } else {
+            const isDark = document.body.classList.contains('dark-mode');
+            arc.setAttribute("fill", isDark ? "#adff2f" : "#2196f3"); // green in dark, blue in light
             arc.setAttribute("d", pathData);
+
         }
     }
 
@@ -209,6 +212,7 @@
         }
 
         createTickMarks(); // now rendered with the correct theme
+        updateVisualArc(1); // Draw full arc with correct color on load
     };
 
 
