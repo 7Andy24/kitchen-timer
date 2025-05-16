@@ -81,3 +81,8 @@ body.dark button:hover {
         padding: 20px;
     }
 }
+
+#visual-timer {
+    display: block;
+    margin: 0 auto 20px auto;
+}

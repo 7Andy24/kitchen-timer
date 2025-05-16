@@ -20,8 +20,17 @@
     <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
 
     <svg id="visual-timer" width="200" height="200" viewBox="0 0 100 100">
-    <circle cx="50" cy="50" r="45" stroke="#ddd" stroke-width="10" fill="none" />
-    <path id="progress-arc" fill="#00bcd4" transform="rotate(-90 50 50)"></path>
+    <!-- Outer white rim -->
+    <circle cx="50" cy="50" r="48" fill="white" />
+
+    <!-- Background circle (gray track) -->
+    <circle cx="50" cy="50" r="45" stroke="#444" stroke-width="6" fill="none" />
+
+    <!-- Dynamic blue pie wedge -->
+    <path id="progress-arc" fill="#2196f3" transform="rotate(-90 50 50)"></path>
+
+    <!-- Inner black center -->
+    <circle cx="50" cy="50" r="25" fill="black" />
     </svg>
 
     <h2 id="display">00:00</h2>
