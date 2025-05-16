@@ -13,7 +13,7 @@
     <input type="number" id="minutes" placeholder="Minutes">
     <input type="number" id="seconds" placeholder="Seconds">
     <br><br>
-    <button onclick="startTimer()">Start</button>
+    <button id="startBtn" onclick="startTimer()" disabled>Start</button>
     <button onclick="repeatTimer()">Repeat</button>
     <button onclick="pauseResumeTimer()">⏯ Pause / Resume</button>
     <button onclick="resetTimer()">🔁 Reset</button>
@@ -168,6 +168,7 @@
     document.getElementById("display").textContent = "00:00";
 
     updateVisualArc(0);              // Clear the arc
+    checkTimeInput(); // ✅ Disable Start after reset
 }
 
     function runTimer() {
@@ -217,6 +218,15 @@
         createTickMarks(); // Re-render ticks/labels with correct color
     }
 
+    function checkTimeInput() {
+        const minutes = document.getElementById("minutes").value;
+        const seconds = document.getElementById("seconds").value;
+        const startBtn = document.getElementById("startBtn");
+
+        const valid = (parseInt(minutes) > 0 || parseInt(seconds) > 0);
+        startBtn.disabled = !valid;
+    }
+
     // Enable dark mode on page load if previously selected
     window.onload = function () {
         const isDark = localStorage.getItem('darkMode') === 'true';
@@ -226,6 +236,9 @@
 
         createTickMarks(); // now rendered with the correct theme
         updateVisualArc(1); // Draw full arc with correct color on load
+        document.getElementById("minutes").addEventListener("input", checkTimeInput);
+        document.getElementById("seconds").addEventListener("input", checkTimeInput);
+
     };
 
 
