@@ -184,7 +184,9 @@
         }, 1000);
     }
 
-    createTickMarks(); // ✅ Call it once on page load
+    window.onload = function () {
+    createTickMarks();
+    };
 </script>    
 </body>
 </html>
