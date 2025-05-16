@@ -19,6 +19,11 @@
 
     <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
 
+    <svg id="visual-timer" width="200" height="200" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="45" stroke="#ddd" stroke-width="10" fill="none" />
+    <path id="progress-arc" fill="#00bcd4" transform="rotate(-90 50 50)"></path>
+    </svg>
+
     <h2 id="display">00:00</h2>
 
     <audio id="alarmSound" src="{{ url_for('static', filename='Ringtone-1-timer.mp3') }}"></audio>
@@ -29,6 +34,30 @@
     let interval;
     let total = 0;
     let isPaused = false;
+
+    function updateVisualArc(percentRemaining) {
+    const arc = document.getElementById("progress-arc");
+    const radius = 45;
+    const circumference = 2 * Math.PI * radius;
+    const angle = 360 * percentRemaining;
+
+    const largeArc = angle > 180 ? 1 : 0;
+    const endX = 50 + radius * Math.cos((angle - 90) * Math.PI / 180);
+    const endY = 50 + radius * Math.sin((angle - 90) * Math.PI / 180);
+
+    const pathData = `
+        M 50,50
+        L 50,5
+        A ${radius},${radius} 0 ${largeArc} 1 ${endX},${endY}
+        Z
+    `;
+
+        if (percentRemaining <= 0) {
+        arc.setAttribute("d", "");
+        } else {
+        arc.setAttribute("d", pathData);
+        }
+    }
 
     function startTimer() {
         const minutesInput = parseInt(document.getElementById("minutes").value) || 0;
@@ -71,6 +100,8 @@
                     String(min).padStart(2, '0') + ":" + String(sec).padStart(2, '0');
 
                 total--;
+
+                updateVisualArc(total / (lastMinutes * 60 + lastSeconds));
 
                 if (total < 0) {
                     clearInterval(interval);
