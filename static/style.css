@@ -55,11 +55,12 @@ body.dark-mode button {
 }
 
 body.dark-mode button {
-    background-color: #bb86fc;
+    background-color: #adff2f; /* Green-yellow */
+    color: #000000;            /* Black text for contrast */
 }
 
 body.dark-mode button:hover {
-    background-color: #985eff;
+    background-color: #9ee82a; /* Slightly darker green on hover */
 }
 
 @media (max-width: 600px) {
