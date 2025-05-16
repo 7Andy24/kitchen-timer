@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kitchen Timer</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>Kitchen Timer</h1>
@@ -15,6 +15,7 @@
     <br><br>
     <button onclick="startTimer()">Start</button>
     <button onclick="repeatTimer()">Repeat</button>
+    <button onclick="pauseResumeTimer()">⏯ Pause / Resume</button>
 
     <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
 
@@ -23,42 +24,54 @@
     <audio id="alarmSound" src="{{ url_for('static', filename='Ringtone-1-timer.mp3') }}"></audio>
 
     <script>
-        let lastMinutes = 0;
-        let lastSeconds = 0;
-        let interval;
-    
-        function toggleDarkMode() {
-            const isDark = document.body.classList.toggle("dark");
-            localStorage.setItem("darkMode", isDark ? "enabled" : "disabled");
-        }               
+    let lastMinutes = 0;
+    let lastSeconds = 0;
+    let interval;
+    let total = 0;
+    let isPaused = false;
 
-        function startTimer() {
-            const minutesInput = parseInt(document.getElementById("minutes").value) || 0;
-            const secondsInput = parseInt(document.getElementById("seconds").value) || 0;
-    
-            lastMinutes = minutesInput;
-            lastSeconds = secondsInput;
-    
-            runTimer(minutesInput, secondsInput);
+    function startTimer() {
+        const minutesInput = parseInt(document.getElementById("minutes").value) || 0;
+        const secondsInput = parseInt(document.getElementById("seconds").value) || 0;
+
+        lastMinutes = minutesInput;
+        lastSeconds = secondsInput;
+
+        total = minutesInput * 60 + secondsInput;
+        isPaused = false;
+
+        runTimer();
+    }
+
+    function repeatTimer() {
+        total = lastMinutes * 60 + lastSeconds;
+        isPaused = false;
+        runTimer();
+    }
+
+    function pauseResumeTimer() {
+        isPaused = !isPaused;
+
+        if (!isPaused) {
+            runTimer(); // resume
+        } else {
+            clearInterval(interval); // pause
         }
-    
-        function repeatTimer() {
-            runTimer(lastMinutes, lastSeconds);
-        }
-    
-        function runTimer(minutes, seconds) {
-            clearInterval(interval);  // Clear any existing timer
-            let total = minutes * 60 + seconds;
-    
-            interval = setInterval(() => {
+    }
+
+    function runTimer() {
+        clearInterval(interval);
+
+        interval = setInterval(() => {
+            if (!isPaused) {
                 let min = Math.floor(total / 60);
                 let sec = total % 60;
-    
+
                 document.getElementById("display").textContent =
                     String(min).padStart(2, '0') + ":" + String(sec).padStart(2, '0');
-    
+
                 total--;
-    
+
                 if (total < 0) {
                     clearInterval(interval);
                     const sound = document.getElementById("alarmSound");
@@ -70,16 +83,9 @@
                         alert("Time's up!");
                     }, 500);
                 }
-            }, 1000);
-        }
-        // Apply saved dark mode on page load
-        window.onload = function() {
-        const savedMode = localStorage.getItem("darkMode");
-        if (savedMode === "enabled") {
-        document.body.classList.add("dark");
-        }
-    };
-
-    </script>    
+            }
+        }, 1000);
+    }
+</script>    
 </body>
 </html>
