@@ -23,6 +23,10 @@
     <!-- Outer white rim -->
     <circle cx="50" cy="50" r="48" fill="white" />
 
+    <g id="tick-marks">
+  <!-- Tick marks will go here via JavaScript -->
+    </g>
+
     <!-- Background circle (gray track) -->
     <circle cx="50" cy="50" r="45" stroke="#444" stroke-width="6" fill="none" />
 
@@ -45,6 +49,7 @@
     let isPaused = false;
 
     function updateVisualArc(percentRemaining) {
+    createTickMarks();
     const arc = document.getElementById("progress-arc");
     const radius = 45;
     const circumference = 2 * Math.PI * radius;
@@ -67,6 +72,60 @@
         arc.setAttribute("d", pathData);
         }
     }
+
+    function createTickMarks(count = 60) {
+        const group = document.getElementById("tick-marks");
+        const radiusOuter = 48;
+        const radiusInner = 44;
+        const radiusMajor = 42;
+        const radiusText = 36;
+
+        group.innerHTML = ''; // Clear any existing ticks/numbers
+
+        for (let i = 0; i < count; i++) {
+            const angle = (2 * Math.PI / count) * i - Math.PI / 2;
+
+            // Thicker ticks every 5
+            const isMajor = i % 5 === 0;
+            const outer = radiusOuter;
+            const inner = isMajor ? radiusMajor : radiusInner;
+
+            const x1 = 50 + outer * Math.cos(angle);
+            const y1 = 50 + outer * Math.sin(angle);
+            const x2 = 50 + inner * Math.cos(angle);
+            const y2 = 50 + inner * Math.sin(angle);
+
+            const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            tick.setAttribute("x1", x1);
+            tick.setAttribute("y1", y1);
+            tick.setAttribute("x2", x2);
+            tick.setAttribute("y2", y2);
+            tick.setAttribute("stroke", "#ffffff");
+            tick.setAttribute("stroke-width", isMajor ? "1.5" : "0.7");
+
+            group.appendChild(tick);
+
+            // Add clock-style numbers every 15 seconds (i.e., 0, 15, 30, 45)
+            if (i % 15 === 0) {
+                const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                const x = 50 + radiusText * Math.cos(angle);
+                const y = 50 + radiusText * Math.sin(angle) + 3; // +3 to align baseline
+
+                label.setAttribute("x", x);
+                label.setAttribute("y", y);
+                label.setAttribute("text-anchor", "middle");
+                label.setAttribute("fill", "#ffffff");
+                label.setAttribute("font-size", "5");
+                label.setAttribute("font-family", "sans-serif");
+
+                const labelVal = (i === 0) ? "0" : String(i);
+                label.textContent = labelVal;
+
+                group.appendChild(label);
+            }
+        }
+    }
+
 
     function startTimer() {
         const minutesInput = parseInt(document.getElementById("minutes").value) || 0;
