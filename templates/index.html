@@ -154,33 +154,43 @@
     }
 
     function runTimer() {
-        clearInterval(interval);
+        const startTime = Date.now();
+        const duration = total * 1000; // total time in milliseconds
+        const totalSeconds = total;
 
-        interval = setInterval(() => {
-            if (!isPaused) {
-                let min = Math.floor(total / 60);
-                let sec = total % 60;
+        function animate() {
+            if (isPaused) return;
 
-                document.getElementById("display").textContent =
-                    String(min).padStart(2, '0') + ":" + String(sec).padStart(2, '0');
+            const now = Date.now();
+            const elapsed = now - startTime;
+            const remaining = Math.max(0, duration - elapsed);
+            total = Math.ceil(remaining / 1000);
 
-                total--;
+            // Update display
+            const displayMin = Math.floor(total / 60);
+            const displaySec = total % 60;
+            document.getElementById("display").textContent =
+                String(displayMin).padStart(2, '0') + ":" + String(displaySec).padStart(2, '0');
 
-                updateVisualArc(total / (lastMinutes * 60 + lastSeconds));
+            // Update arc smoothly
+            const percentRemaining = remaining / duration;
+            updateVisualArc(percentRemaining);
 
-                if (total < 0) {
-                    clearInterval(interval);
-                    const sound = document.getElementById("alarmSound");
-                    sound.currentTime = 0;
-                    sound.play().catch((e) => {
-                        console.log("Sound play error:", e);
-                    });
-                    setTimeout(() => {
-                        alert("Time's up!");
-                    }, 500);
-                }
+            if (remaining > 0) {
+                requestAnimationFrame(animate);
+            } else {
+                const sound = document.getElementById("alarmSound");
+                sound.currentTime = 0;
+                sound.play().catch((e) => {
+                    console.log("Sound play error:", e);
+                });
+                setTimeout(() => {
+                    alert("Time's up!");
+                }, 500);
             }
-        }, 1000);
+        }
+
+        requestAnimationFrame(animate);
     }
 
     window.onload = function () {
