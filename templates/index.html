@@ -16,6 +16,7 @@
     <button onclick="startTimer()">Start</button>
     <button onclick="repeatTimer()">Repeat</button>
     <button onclick="pauseResumeTimer()">⏯ Pause / Resume</button>
+    <button onclick="resetTimer()">🔁 Reset</button>
 
     <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
 
@@ -156,6 +157,18 @@
             clearInterval(interval); // pause
         }
     }
+
+    function resetTimer() {
+    clearInterval(interval);         // Stop the countdown
+    isPaused = false;
+    total = 0;
+
+    document.getElementById("minutes").value = "";
+    document.getElementById("seconds").value = "";
+    document.getElementById("display").textContent = "00:00";
+
+    updateVisualArc(0);              // Clear the arc
+}
 
     function runTimer() {
         const startTime = Date.now();
