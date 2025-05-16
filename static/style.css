@@ -26,8 +26,9 @@ button {
     margin: 10px;
     border: none;
     border-radius: 8px;
-    background-color: #007bff;
+    background-color: #2196f3; /* Match arc */
     color: white;
+    border: none;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
