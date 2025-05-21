@@ -13,8 +13,8 @@
     <input type="number" id="minutes" placeholder="Minutes">
     <input type="number" id="seconds" placeholder="Seconds">
     <br><br>
-    <button id="startBtn" onclick="startTimer()" disabled>Start</button>
-    <button id="repeatBtn" onclick="repeatTimer()" disabled>Repeat</button>
+    <button id="startBtn" onclick="startTimer()" disabled title="Enter a time to enable this button">Start</button>
+    <button id="repeatBtn" onclick="repeatTimer()" disabled title="Start the timer first">Repeat</button>
     <button onclick="pauseResumeTimer()">⏯ Pause / Resume</button>
     <button onclick="resetTimer()">🔁 Reset</button>
 
@@ -141,6 +141,8 @@
 
         runTimer();
         document.getElementById("repeatBtn").disabled = false;
+        document.getElementById("repeatBtn").title = "";
+
     }
 
     function repeatTimer() {
@@ -160,18 +162,20 @@
     }
 
     function resetTimer() {
-    clearInterval(interval);         // Stop the countdown
-    isPaused = false;
-    total = 0;
+        clearInterval(interval);         // Stop the countdown
+        isPaused = false;
+        total = 0;
 
-    document.getElementById("minutes").value = "";
-    document.getElementById("seconds").value = "";
-    document.getElementById("display").textContent = "00:00";
+        document.getElementById("minutes").value = "";
+        document.getElementById("seconds").value = "";
+        document.getElementById("display").textContent = "00:00";
 
-    updateVisualArc(0);              // Clear the arc
-    checkTimeInput(); // ✅ Disable Start after reset
-    document.getElementById("repeatBtn").disabled = true;
-}
+        updateVisualArc(0);              // Clear the arc
+        checkTimeInput(); // ✅ Disable Start after reset
+        document.getElementById("repeatBtn").disabled = true;
+        document.getElementById("repeatBtn").title = "Start the timer first";
+
+    }
 
     function runTimer() {
         const startTime = Date.now();
@@ -224,10 +228,19 @@
         const minutes = document.getElementById("minutes").value;
         const seconds = document.getElementById("seconds").value;
         const startBtn = document.getElementById("startBtn");
+        const repeatBtn = document.getElementById("repeatBtn");
 
         const valid = (parseInt(minutes) > 0 || parseInt(seconds) > 0);
+
         startBtn.disabled = !valid;
+        startBtn.title = valid ? "" : "Enter a time to enable this button";
+
+        if (!valid) {
+            repeatBtn.disabled = true;
+            repeatBtn.title = "Start the timer first";
+        }
     }
+
 
     // Enable dark mode on page load if previously selected
     window.onload = function () {
