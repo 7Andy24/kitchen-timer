@@ -13,8 +13,8 @@
     <input type="number" id="minutes" placeholder="Minutes">
     <input type="number" id="seconds" placeholder="Seconds">
     <br><br>
-    <button id="startBtn" onclick="startTimer()" disabled title="Enter a time to enable this button">Start</button>
-    <button id="repeatBtn" onclick="repeatTimer()" disabled title="Start the timer first">Repeat</button>
+    <button id="startBtn" onclick="startTimer()" disabled data-tooltip="Enter a time to enable this button">Start</button>
+    <button id="repeatBtn" onclick="repeatTimer()" disabled data-tooltip="Start the timer first">Repeat</button>
     <button onclick="pauseResumeTimer()">⏯ Pause / Resume</button>
     <button onclick="resetTimer()">🔁 Reset</button>
 
@@ -141,7 +141,7 @@
 
         runTimer();
         document.getElementById("repeatBtn").disabled = false;
-        document.getElementById("repeatBtn").title = "";
+        document.getElementById("repeatBtn").setAttribute("data-tooltip", "");
 
     }
 
@@ -173,7 +173,8 @@
         updateVisualArc(0);              // Clear the arc
         checkTimeInput(); // ✅ Disable Start after reset
         document.getElementById("repeatBtn").disabled = true;
-        document.getElementById("repeatBtn").title = "Start the timer first";
+        document.getElementById("repeatBtn").setAttribute("data-tooltip", "Start the timer first");
+
 
     }
 
@@ -233,13 +234,16 @@
         const valid = (parseInt(minutes) > 0 || parseInt(seconds) > 0);
 
         startBtn.disabled = !valid;
-        startBtn.title = valid ? "" : "Enter a time to enable this button";
+        startBtn.setAttribute("data-tooltip", valid ? "" : "Enter a time to enable this button");
 
         if (!valid) {
             repeatBtn.disabled = true;
-            repeatBtn.title = "Start the timer first";
+            repeatBtn.setAttribute("data-tooltip", "Start the timer first");
+        } else {
+            repeatBtn.setAttribute("data-tooltip", "");
         }
     }
+
 
 
     // Enable dark mode on page load if previously selected
