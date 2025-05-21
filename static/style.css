@@ -114,3 +114,7 @@ button[data-tooltip]::after {
 button[data-tooltip]:hover::after {
     opacity: 1;
 }
+
+button[data-tooltip=""]::after {
+    display: none;
+}
