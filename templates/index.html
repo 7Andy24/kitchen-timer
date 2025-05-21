@@ -18,7 +18,7 @@
     <button onclick="pauseResumeTimer()">⏯ Pause / Resume</button>
     <button onclick="resetTimer()">🔁 Reset</button>
 
-    <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
+    <button id="themeToggle" onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
 
     <svg id="visual-timer" width="220" height="240" viewBox="-15 -15 130 130">
     <!-- Outer white rim -->
@@ -222,7 +222,12 @@
         const body = document.body;
         const isDark = body.classList.toggle('dark-mode');
         localStorage.setItem('darkMode', isDark);
-        createTickMarks(); // Re-render ticks/labels with correct color
+        createTickMarks(); // Re-render ticks with the right color
+        updateVisualArc(total / (lastMinutes * 60 + lastSeconds || 1)); // Update arc color
+
+        // Update button label
+        const toggleBtn = document.getElementById("themeToggle");
+        toggleBtn.textContent = isDark ? "☀️ Toggle Light Mode" : "🌙 Toggle Dark Mode";
     }
 
     function checkTimeInput() {
@@ -244,8 +249,6 @@
         }
     }
 
-
-
     // Enable dark mode on page load if previously selected
     window.onload = function () {
         const isDark = localStorage.getItem('darkMode') === 'true';
@@ -257,6 +260,8 @@
         updateVisualArc(1); // Draw full arc with correct color on load
         document.getElementById("minutes").addEventListener("input", checkTimeInput);
         document.getElementById("seconds").addEventListener("input", checkTimeInput);
+        const toggleBtn = document.getElementById("themeToggle");
+        toggleBtn.textContent = isDark ? "☀️ Toggle Light Mode" : "🌙 Toggle Dark Mode";
 
     };
 
