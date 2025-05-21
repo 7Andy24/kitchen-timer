@@ -14,7 +14,7 @@
     <input type="number" id="seconds" placeholder="Seconds">
     <br><br>
     <button id="startBtn" onclick="startTimer()" disabled>Start</button>
-    <button onclick="repeatTimer()">Repeat</button>
+    <button id="repeatBtn" onclick="repeatTimer()" disabled>Repeat</button>
     <button onclick="pauseResumeTimer()">⏯ Pause / Resume</button>
     <button onclick="resetTimer()">🔁 Reset</button>
 
@@ -140,6 +140,7 @@
         isPaused = false;
 
         runTimer();
+        document.getElementById("repeatBtn").disabled = false;
     }
 
     function repeatTimer() {
@@ -169,6 +170,7 @@
 
     updateVisualArc(0);              // Clear the arc
     checkTimeInput(); // ✅ Disable Start after reset
+    document.getElementById("repeatBtn").disabled = true;
 }
 
     function runTimer() {
