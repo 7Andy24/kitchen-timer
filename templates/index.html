@@ -75,12 +75,15 @@
         }
     }
 
-    function createTickMarks(count = 60) {
+    function createTickMarks(count = 60, duration = null) {
         const group = document.getElementById("tick-marks");
         const radiusOuter = 50;
         const radiusInner = 46;
         const radiusMajor = 42;
         const radiusText = 58;
+        const fractionalLabels = duration
+        ? [0.75, 0.5, 0.25].map(f => Math.round(duration * f))
+        : [];
 
         group.innerHTML = ''; // Clear previous ticks/numbers
 
@@ -107,25 +110,32 @@
             tick.setAttribute("stroke-width", isMajor ? "2" : "0.7");
             group.appendChild(tick);
 
-            // Add numbers (every 15 seconds)
-            if (i % 15 === 0) {
-                const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                const x = 50 + radiusText * Math.cos(angle);
-                const y = 50 + radiusText * Math.sin(angle) + 2; // align baseline
+            if (fractionalLabels.length > 0) {
+                const ticksPerSecond = count / duration;
 
-                label.setAttribute("x", x);
-                label.setAttribute("y", y);
-                label.setAttribute("text-anchor", "middle");
-                label.setAttribute("fill", isDark ? "#ffffff" : "#000000");
-                label.setAttribute("font-size", "6");
-                label.setAttribute("font-weight", "bold");
-                label.setAttribute("font-family", "sans-serif");
+                fractionalLabels.forEach(labelVal => {
+                    const labelIndex = Math.round(labelVal * ticksPerSecond);
+                    if (labelIndex === i) {
+                        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        const x = 50 + radiusText * Math.cos(angle);
+                        const y = 50 + radiusText * Math.sin(angle) + 2;
 
-                const labelVal = (i === 0) ? "0" : String(i);
-                label.textContent = labelVal;
+                        const isDark = document.body.classList.contains('dark-mode');
 
-                group.appendChild(label);
+                        label.setAttribute("x", x);
+                        label.setAttribute("y", y);
+                        label.setAttribute("text-anchor", "middle");
+                        label.setAttribute("fill", isDark ? "#ffffff" : "#000000");
+                        label.setAttribute("font-size", "6");
+                        label.setAttribute("font-weight", "bold");
+                        label.setAttribute("font-family", "sans-serif");
+                        label.textContent = labelVal;
+
+                        group.appendChild(label);
+                    }
+                });
             }
+
         }
     }
     
@@ -139,6 +149,7 @@
         total = minutesInput * 60 + secondsInput;
         isPaused = false;
 
+        createTickMarks(60, total);
         runTimer();
         document.getElementById("repeatBtn").disabled = false;
         document.getElementById("repeatBtn").setAttribute("data-tooltip", "");
@@ -148,7 +159,9 @@
     function repeatTimer() {
         total = lastMinutes * 60 + lastSeconds;
         isPaused = false;
+        createTickMarks(60, total);
         runTimer();
+
     }
 
     function pauseResumeTimer() {
@@ -256,7 +269,7 @@
             document.body.classList.add('dark-mode');
         }
 
-        createTickMarks(); // now rendered with the correct theme
+        createTickMarks(60, 60); // default: 60 sec
         updateVisualArc(1); // Draw full arc with correct color on load
         document.getElementById("minutes").addEventListener("input", checkTimeInput);
         document.getElementById("seconds").addEventListener("input", checkTimeInput);
