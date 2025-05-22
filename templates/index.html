@@ -110,29 +110,28 @@
             tick.setAttribute("stroke-width", isMajor ? "2" : "0.7");
             group.appendChild(tick);
 
-            if (fractionalLabels.length > 0) {
-                const ticksPerSecond = count / duration;
+            if (fractionalLabels.length > 0 && duration) {
+                const fractionAngles = [0.75, 0.5, 0.25]; // right, bottom, left
+                const labelValues = fractionalLabels;     // [3/4, 1/2, 1/4 of total time]
+                
+                fractionAngles.forEach((frac, index) => {
+                    const labelAngle = 2 * Math.PI * frac - Math.PI / 2;
+                    const x = 50 + radiusText * Math.cos(labelAngle);
+                    const y = 50 + radiusText * Math.sin(labelAngle) + 2;
 
-                fractionalLabels.forEach(labelVal => {
-                    const labelIndex = Math.round(labelVal * ticksPerSecond);
-                    if (labelIndex === i) {
-                        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                        const x = 50 + radiusText * Math.cos(angle);
-                        const y = 50 + radiusText * Math.sin(angle) + 2;
+                    const isDark = document.body.classList.contains('dark-mode');
 
-                        const isDark = document.body.classList.contains('dark-mode');
+                    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    label.setAttribute("x", x);
+                    label.setAttribute("y", y);
+                    label.setAttribute("text-anchor", "middle");
+                    label.setAttribute("fill", isDark ? "#ffffff" : "#000000");
+                    label.setAttribute("font-size", "6");
+                    label.setAttribute("font-weight", "bold");
+                    label.setAttribute("font-family", "sans-serif");
+                    label.textContent = labelValues[index];
 
-                        label.setAttribute("x", x);
-                        label.setAttribute("y", y);
-                        label.setAttribute("text-anchor", "middle");
-                        label.setAttribute("fill", isDark ? "#ffffff" : "#000000");
-                        label.setAttribute("font-size", "6");
-                        label.setAttribute("font-weight", "bold");
-                        label.setAttribute("font-family", "sans-serif");
-                        label.textContent = labelVal;
-
-                        group.appendChild(label);
-                    }
+                    group.appendChild(label);
                 });
             }
 
