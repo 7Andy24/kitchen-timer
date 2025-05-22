@@ -252,7 +252,7 @@
         const body = document.body;
         const isDark = body.classList.toggle('dark-mode');
         localStorage.setItem('darkMode', isDark);
-        createTickMarks(); // Re-render ticks with the right color
+        createTickMarks(60, total || 60); // Use current total duration
         updateVisualArc(total / (lastMinutes * 60 + lastSeconds || 1)); // Update arc color
 
         // Update button label
